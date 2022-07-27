@@ -9,7 +9,7 @@ app = typer.Typer()
 def _version_callback(value):
     if value:
         typer.echo("-----------------------------ntzpy----------------------------")
-        typer.echo(f"{__app_name__} v{__version__}")
+        typer.echo(f"{__app_name__} v{__version__}\n")
         typer.echo("\nWhere notes are made and labs are completed")
         raise typer.Exit()
 
