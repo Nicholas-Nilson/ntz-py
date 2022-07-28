@@ -15,12 +15,15 @@ class DBResponse(NamedTuple):
 
 
 class DatabaseHandler:
-    # DatabaseHandler will do the reading & writing, when it's initialized it just needs to konw where this is all happening.
+
+    # DatabaseHandler will do the reading & writing, when it's initialized it just
+    # needs to konw where this is all happening.
     def __init__(self, db_path: Path) -> None:
         self.db_path = db_path
     # below to read & write to our JSON db.
     # read_todos opens the db and deserializes it (takes from JSON format
     # and turns it in to something we can natively use in Python).
+
     def read_todos(self) -> DBResponse:
         try:
             with self.db_path.open("r") as db:
