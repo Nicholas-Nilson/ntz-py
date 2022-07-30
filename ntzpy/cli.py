@@ -1,7 +1,9 @@
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 import typer
 
+import ntzpy
+import ntzpy.ntz
 from ntzpy import __app_name__, __version__, ERRORS, config, database
 
 app = typer.Typer()
@@ -36,6 +38,30 @@ def init(
         raise typer.Exit(1)
     else:
         typer.secho(f"To ntz to-do database is {db_path}", fg=typer.colors.GREEN)
+
+
+def get_todoer() -> ntzpy.ntz.ToDoer:
+    # check for config file to ensure the db path is properly routed
+    if config.CONFIG_FILE_PATH.exists():
+        db_path = database.get_database_path(config.CONFIG_FILE_PATH)
+    else:
+        typer.secho(
+            'Config file not fount. Please run "ntz init"',
+            fg=typer.colors.RED,
+        )
+        raise typer.Exit(1)
+    # likewise, if we have a config file, does it have a db_path? if so, let's send the
+    # to do lists there, otherwise let's ask the user to run init.from
+    # if both the config & db_path exist, we create an instance of our to do list maker
+    if db_path.exists():
+        return ntzpy.ntz.ToDoer(db_path)
+    else:
+        typer.secho(
+            'Database not found. Please run "ntz init"',
+            fg=typer.colors.RED,
+        )
+        raise typer.Exit(1)
+
 
 
 def _version_callback(value):
