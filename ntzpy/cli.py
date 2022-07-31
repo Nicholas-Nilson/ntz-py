@@ -63,12 +63,69 @@ def get_todoer() -> ntzpy.ntz.ToDoer:
         raise typer.Exit(1)
 
 
+@app.command()
+def add(
+        # the arguments we will add to our typer.
+        # (...) the ellipsis tells typer that description is required. Priority can be set automatically.
+        description: List[str] = typer.Argument(...),
+        # using typer.Option with a min & max, typer verifies that the user's input is 1, 2, or 3.
+        # inside the quotes are the option names.
+        priority: int = typer.Option(2, "--priority", "-p", min=1, max=3)
+) -> None:
+    """ Adds a new to-do with a description."""
+    # makes a todoer object for adding to db
+    todoer = get_todoer()
+    todo, error = todoer.add(description, priority)
+    if error:
+        typer.secho(
+            f'Adding to-do failed with "{ERRORS[error]}"', fg=typer.colors.RED
+        )
+        raise typer.Exit(1)
+    else:
+        typer.secho(
+            f"""to-do: "{todo['Description']}" was added """
+            f"""with priority: {priority}""",
+            fg=typer.colors.GREEN,
+        )
+
+
+@app.command(name="list")
+def list_all() -> None:
+    """Shows to-do list"""
+    # create todoer instance and get our list from the db
+    todoer = get_todoer()
+    todo_list = todoer.get_todo_list()
+    if len(todo_list) == 0:
+        typer.secho(
+            "There are no tasks in the to-do list yet!", fg=typer.colors.RED
+        )
+        raise typer.Exit()
+    typer.secho("\nto-do list:\n", fg=typer.colors.BLUE, bold=True)
+    columns = (
+        "Id. ",
+        "| Priority ",
+        "| Done ",
+        "| Description ",
+    )
+    headers = "".join(columns)
+    typer.secho(headers, fg=typer.colors.BLUE, bold=True)
+    typer.secho("-" * len(headers), fg=typer.colors.BLUE)
+    for id, todo in enumerate(todo_list, 1):
+        desc, priority, done = todo.values()
+        typer.secho(
+            f"{id}{(len(columns[0]) - len(str(id))) * ' '}"
+            f"| ({priority}){(len(columns[1]) - len(str(priority)) -4) * ' '}"
+            f"| {done}{(len(columns[2]) - len(str(done)) -2) * ' '}"
+            f"| {desc}",
+            fg=typer.colors.BLUE,
+        )
+    typer.secho("-" * len(headers) + "\n", fg=typer.colors.BLUE)
 
 def _version_callback(value):
     if value:
-        typer.echo("-----------------------------ntzpy----------------------------")
-        typer.echo(f"{__app_name__} v{__version__}\n")
-        typer.echo("\nWhere notes are made and labs are completed")
+        typer.echo("\n-----------------------------ntzpy----------------------------")
+        typer.echo(f"{__app_name__} v{__version__}")
+        typer.echo("Where notes are made and labs are completed\n")
         raise typer.Exit()
 
 

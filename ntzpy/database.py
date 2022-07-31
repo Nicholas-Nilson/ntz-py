@@ -44,7 +44,6 @@ class DatabaseHandler:
             return DBResponse(todo_list, DB_WRITE_ERROR)
 
 
-
 # if the user does not specify a save location for the database, this will generate a default.
 DEFAULT_DB_FILE_PATH = Path.home().joinpath("."+Path.home().stem + "_todo.json")
 
@@ -54,7 +53,7 @@ def get_database_path(config_file: Path) -> Path:
     """Returns the current path of the app's database."""
     config_parser = configparser.ConfigParser()
     config_parser.read(config_file)
-    return Path(config_parser["general"]["database"])
+    return Path(config_parser["General"]["database"])
 
 
 def init_database(db_path: Path) -> int:
