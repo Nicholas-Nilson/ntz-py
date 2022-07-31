@@ -62,3 +62,4 @@ def test_add(mock_json_file, description, priority, expected):
     assert notez.add(description, priority) == expected
     read = notez._db_handler.read_todos()
     assert len(read.todo_list) == 2
+

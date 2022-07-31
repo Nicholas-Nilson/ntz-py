@@ -1,0 +1,8 @@
+To add:
+
+- Categories:
+    1. ability to set a category for to-dos
+    2. display all to-dos, or just those from a category
+    3. ability to delete & modify to-dos in each category
+
+- Better documentation when using --help
